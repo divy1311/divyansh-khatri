@@ -530,14 +530,26 @@
     }
 
     .projects-list {
+      -webkit-column-count: 2;
+      -moz-column-count: 2;
       column-count: 2;
+      -webkit-column-gap: 2rem;
+      -moz-column-gap: 2rem;
       column-gap: 2rem;
       margin-bottom: var(--spacing);
-      align-items: start;
+      /* fallback to grid if columns unsupported */
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
     }
 
     .project {
       display: inline-flex;
+      -webkit-column-break-inside: avoid;
+      -moz-column-break-inside: avoid;
+      column-break-inside: avoid;
+      break-inside: avoid-column;
+      page-break-inside: avoid;
       flex-direction: column;
       width: 100%;
       margin: 0 0 var(--spacing);
