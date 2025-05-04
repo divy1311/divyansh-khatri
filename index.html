@@ -529,17 +529,16 @@
       color: var(--accent-start);
     }
 
-    .projects-list {
-      position: relative; /* Masonry container */
+    .projects-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:2rem;
+      margin-bottom:var(--spacing);
+      align-items:flex-start;   /* ✅ let each card keep its own height */
     }
-
-    .grid-sizer {
-      width: calc(50% - 16px); /* 16 px = half gutter on each side */
-    }
-
     .project {
-      width: calc(50% - 16px); /* match grid‑sizer */
-      margin-bottom: 2rem;
+      display: block;           /* fix Safari column rendering */
+      margin: 0;           /* remove extra internal whitespace; flex gap handles spacing */
       background: rgba(31, 31, 41, 0.85);
       border: 1px solid rgba(60, 60, 80, 0.35);
       border-radius: var(--radius);
@@ -547,20 +546,7 @@
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
       transition: transform var(--transition), box-shadow var(--transition);
       animation: float 6s ease-in-out infinite;
-      margin-left: 0;
-      margin-right: 0;
-    }
-
-    .project {
-      width: calc(50% - 16px) !important; /* ensure same calc everywhere */
-      background: rgba(31, 31, 41, 0.85);
-      border: 1px solid rgba(60, 60, 80, 0.35);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
-      transition: transform var(--transition), box-shadow var(--transition);
-      animation: float 6s ease-in-out infinite;
-      margin: 0 0 var(--spacing);
+      width: calc(50% - 1rem);
     }
 
     /* Category accent stripe */
@@ -573,12 +559,20 @@
 
     .points {
       counter-reset: points;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
     .point {
       position: relative;
       padding-left: 2rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    /* Remove extra gap at the end of each project’s bullet list */
+    .points .point:last-child {
+      margin-bottom: 0;
+    }
+    /* Reduce gap between points */
+    .point {
+      margin-bottom: 0.5rem;
     }
     .point::before {
       counter-increment: points;
@@ -655,25 +649,24 @@
     }
 
     .project-image {
-      /* height: 300px; */
       overflow: hidden;
     }
 
     .project-image img {
       width: 100%;
-      height: auto;
-      object-fit: cover;
+      height: auto;        /* allow full image height */
+      object-fit: contain; /* show entire image without cropping */
     }
 
     .project-details {
-      padding: 1.5rem;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
     }
 
     .project-details h3 {
       font-size: 1.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.6rem;
     }
 
     .project-details p {
@@ -686,7 +679,7 @@
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
     }
 
     .tech-stack img {
@@ -702,7 +695,7 @@
       border: none;
       border-radius: 2rem;
       font-weight: 600;
-      margin-top: auto;
+      margin-top: 0.5rem;
       transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       user-select: none;
@@ -1153,6 +1146,25 @@
       background: var(--accent-start);
       opacity: 0.1;
     }
+    /*—— Safari fallback: disable continuous float animation inside column layout
+        to prevent cards from vanishing / re‑flowing ——*/
+    @media not all and (min-resolution: 0.001dpcm) {
+      @supports (-webkit-appearance: none) {
+        .projects-list .project {
+          animation: none !important;   /* stop 6s float */
+          will-change: auto;
+        }
+      }
+    }
+    /*—— Safari fallback: stop hover transform & shadow to prevent flicker ——*/
+    @media not all and (min-resolution: 0.001dpcm) {
+      @supports (-webkit-appearance: none) {
+        .project:hover {
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
   </style>
 </head>
 <head>
@@ -1243,7 +1255,6 @@
         <button data-filter="ai">AI</button>
       </div>
       <div class="projects-list" id="projects-grid">
-        <div class="grid-sizer"></div>
         <div class="project card-glow" data-cat="ai">
           <div class="project-image"><img loading="lazy" src="./images/project-1.png" alt="SmartMedAI" /></div>
           <div class="project-details card-spotlight">
@@ -1251,9 +1262,6 @@
               <div class="points">
                 <div class="point">
                   <p>Fine-tuned a 1.5 B-parameter Qwen-2.5 model with LoRA + DPO to create a domain-safe medical assistant.</p>
-                </div>
-                <div class="point">
-                  <p>Curated 30 k training prompts and auto-generated 3.8 k preference pairs—zero human labels.</p>
                 </div>
                 <div class="point">
                   <p>Boosted clinical-QA accuracy from 0.769 to 0.805 (+3.6 pp) and lifted BLEURT/BERTScore by ~5%.</p>
@@ -1268,6 +1276,71 @@
               <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" />
             </div>
             <a href="https://github.com/SmartMedAI/SmartMedAI" class="btn">View Code</a>
+          </div>
+        </div>
+        <div class="project card-glow" data-cat="software">
+          <div class="project-image"><img loading="lazy" src="./images/project-2.png" alt="Stock Trading and Investment Platform" /></div>
+          <div class="project-details card-spotlight">
+            <h3>Stock Trading and Investment Platform</h3>
+              <div class="points">
+                <div class="point">
+                  <p>Built real‑time trading app with Node.js, MongoDB & SwiftUI</p>
+                </div>
+                <div class="point">
+                  <p>Integrated WebSockets for live updates</p>
+                </div>
+                <div class="point">
+                  <p>Deployed backend on Google Cloud Platform</p>
+                </div>
+              </div>
+            <div class="tech-stack">
+              <img src="https://img.icons8.com/color/48/000000/nodejs.png" alt="Node.js" />
+              <img src="https://img.icons8.com/color/48/000000/mongodb.png" alt="MongoDB" />
+              <img src="https://img.icons8.com/color/48/000000/swift.png" alt="Swift" />
+              <img src="https://img.icons8.com/color/48/000000/google-cloud.png" alt="GCP" />
+            </div>
+            <a href="https://github.com/divy1311/Assignment-4" class="btn">View Code</a>
+          </div>
+        </div>
+        <div class="project card-glow" data-cat="ai">
+          <div class="project-image"><img loading="lazy" src="./images/project-4.png" alt="Intelligent File Organizer Using Generative AI Models" /></div>
+          <div class="project-details card-spotlight">
+            <h3>Intelligent File Organizer Using Generative AI Models</h3>
+              <div class="points">
+                <div class="point">
+                  <p>Built an AI-powered file organization tool using Llama3.2 3B & LLaVA-v1.6 (Vicuna-7B).</p>
+                </div>
+                <div class="point">
+                  <p>Enabled intelligent categorization of textual and visual files with metadata generation.</p>
+                </div>
+              </div>
+            <div class="tech-stack">
+              <img src="https://img.icons8.com/color/48/000000/python--v1.png" alt="Python" />
+              <img src="https://img.icons8.com/color/48/000000/artificial-intelligence.png" alt="AI" />
+              <img src="https://img.icons8.com/color/48/000000/folder-invoices.png" alt="File Organizer" />
+              <img src="https://img.icons8.com/?size=100&id=PvvcWRWxRKSR&format=png&color=000000" alt="Llama" />
+            </div>
+            <!-- <a href="#" class="btn">View Live</a> -->
+          </div>
+        </div>
+        <div class="project card-glow" data-cat="ai">
+          <div class="project-image"><img loading="lazy" src="./images/project-3.png" alt="Benchmarking CNN Architectures on the Intel Image Classification Dataset" /></div>
+          <div class="project-details card-spotlight">
+            <h3>Benchmarking CNN Architectures on the Intel Image Classification Dataset</h3>
+              <div class="points">
+                <div class="point">
+                  <p>Achieved 92.47% accuracy in image classification using ResNet, EfficientNet, and VGG16.</p>
+                </div>
+                <div class="point">
+                  <p>Outperformed baseline models by 2.5%, demonstrating optimized CNN architectures.</p>
+                </div>
+              </div>
+            <div class="tech-stack">
+              <img src="https://img.icons8.com/color/48/000000/tensorflow.png" alt="TensorFlow" />
+              <img src="https://img.icons8.com/?size=100&id=jH4BpkMnRrU5&format=png&color=000000" alt="PyTorch" />
+              <img src="https://cdn.prod.website-files.com/65264f6bf54e751c3a776db1/66d86935aaeb8c0b9fa1bde7_scikit-learn.png" alt="Scikit-learn" />
+            </div>
+            <a href="https://github.com/divyanshkhatri/Intel-Image-Classification" class="btn">View Code</a>
           </div>
         </div>
         <div class="project card-glow" data-cat="software">
@@ -1301,30 +1374,6 @@
           </div>
         </div>
         <div class="project card-glow" data-cat="software">
-          <div class="project-image"><img loading="lazy" src="./images/project-2.png" alt="Stock Trading and Investment Platform" /></div>
-          <div class="project-details card-spotlight">
-            <h3>Stock Trading and Investment Platform</h3>
-              <div class="points">
-                <div class="point">
-                  <p>Built real‑time trading app with Node.js, MongoDB & SwiftUI</p>
-                </div>
-                <div class="point">
-                  <p>Integrated WebSockets for live updates</p>
-                </div>
-                <div class="point">
-                  <p>Deployed backend on Google Cloud Platform</p>
-                </div>
-              </div>
-            <div class="tech-stack">
-              <img src="https://img.icons8.com/color/48/000000/nodejs.png" alt="Node.js" />
-              <img src="https://img.icons8.com/color/48/000000/mongodb.png" alt="MongoDB" />
-              <img src="https://img.icons8.com/color/48/000000/swift.png" alt="Swift" />
-              <img src="https://img.icons8.com/color/48/000000/google-cloud.png" alt="GCP" />
-            </div>
-            <a href="https://github.com/divy1311/Assignment-4" class="btn">View Code</a>
-          </div>
-        </div>
-        <div class="project card-glow" data-cat="software">
           <div class="project-image">
             <img loading="lazy" src="./images/project-5.png" alt="Portfolio Website" />
           </div>
@@ -1349,68 +1398,15 @@
               <img src="https://img.icons8.com/color/48/000000/css3.png" alt="CSS3" />
               <img src="https://img.icons8.com/color/48/000000/javascript--v1.png" alt="JavaScript" />
             </div>
-            <a href="https://github.com/divyanshkhatri/portfolio" class="btn">View Code</a>
-          </div>
-        </div>
-        <div class="project card-glow" data-cat="ai">
-          <div class="project-image"><img loading="lazy" src="./images/project-3.png" alt="Benchmarking CNN Architectures on the Intel Image Classification Dataset" /></div>
-          <div class="project-details card-spotlight">
-            <h3>Benchmarking CNN Architectures on the Intel Image Classification Dataset</h3>
-              <div class="points">
-                <div class="point">
-                  <p>Achieved 92.47% accuracy in image classification using ResNet, EfficientNet, and VGG16.</p>
-                </div>
-                <div class="point">
-                  <p>Outperformed baseline models by 2.5%, demonstrating optimized CNN architectures.</p>
-                </div>
-              </div>
-            <div class="tech-stack">
-              <img src="https://img.icons8.com/color/48/000000/tensorflow.png" alt="TensorFlow" />
-              <img src="https://img.icons8.com/?size=100&id=jH4BpkMnRrU5&format=png&color=000000" alt="PyTorch" />
-              <img src="https://cdn.prod.website-files.com/65264f6bf54e751c3a776db1/66d86935aaeb8c0b9fa1bde7_scikit-learn.png" alt="Scikit-learn" />
-            </div>
-            <a href="https://github.com/divyanshkhatri/Intel-Image-Classification" class="btn">View Code</a>
-          </div>
-        </div>
-        <div class="project card-glow" data-cat="ai">
-          <div class="project-image"><img loading="lazy" src="./images/project-4.png" alt="Intelligent File Organizer Using Generative AI Models" /></div>
-          <div class="project-details card-spotlight">
-            <h3>Intelligent File Organizer Using Generative AI Models</h3>
-              <div class="points">
-                <div class="point">
-                  <p>Built an AI-powered file organization tool using Llama3.2 3B & LLaVA-v1.6 (Vicuna-7B).</p>
-                </div>
-                <div class="point">
-                  <p>Enabled intelligent categorization of textual and visual files with metadata generation.</p>
-                </div>
-              </div>
-            <div class="tech-stack">
-              <img src="https://img.icons8.com/color/48/000000/python--v1.png" alt="Python" />
-              <img src="https://img.icons8.com/color/48/000000/artificial-intelligence.png" alt="AI" />
-              <img src="https://img.icons8.com/color/48/000000/folder-invoices.png" alt="File Organizer" />
-              <img src="https://img.icons8.com/?size=100&id=PvvcWRWxRKSR&format=png&color=000000" alt="Llama" />
-            </div>
-            <!-- <a href="#" class="btn">View Live</a> -->
+            <a href="https://github.com/divy1311/divyansh-khatri" class="btn">View Code</a>
           </div>
         </div>
       </div>
+      <!-- hidden stash for filtered‑out cards -->
+      <div id="projects-hidden" style="display:none;"></div>
     </section>
 
-    <!-- Masonry & imagesLoaded for dynamic project grid -->
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script>
-      // Initialize Masonry after all project images have loaded
-      const grid = document.querySelector('#projects-grid');
-      imagesLoaded(grid, () => {
-        new Masonry(grid, {
-          itemSelector: '.project',
-          columnWidth: '.grid-sizer',
-          percentPosition: true,
-          gutter: 16
-        });
-      });
-    </script>
+
 
     <!-- Experience -->
     <section class="experience fade-up">
@@ -1564,14 +1560,26 @@
     document.querySelectorAll('.fade-up').forEach(el => fader.observe(el));
   </script>
   <script>
-    document.querySelectorAll('.project-filter button').forEach(btn => {
+    const filterBtns = document.querySelectorAll('.project-filter button');
+    const grid      = document.getElementById('projects-grid');
+    const stash     = document.getElementById('projects-hidden');
+
+    function applyFilter(cat) {
+      // Move all cards to stash first
+      Array.from(grid.children).forEach(card => stash.appendChild(card));
+      // Decide which cards to show
+      const toShow = cat === 'all'
+        ? Array.from(stash.children)
+        : Array.from(stash.children).filter(c => c.dataset.cat === cat);
+      // Append visible cards back to the column container
+      toShow.forEach(card => grid.appendChild(card));
+    }
+
+    filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.project-filter button').forEach(b => b.classList.remove('active'));
+        filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const f = btn.dataset.filter;
-        document.querySelectorAll('.project').forEach(p => {
-          p.style.display = (f === 'all' || p.dataset.cat === f) ? '' : 'none';
-        });
+        applyFilter(btn.dataset.filter);
       });
     });
   </script>
@@ -1694,6 +1702,7 @@
         overlay.style.clipPath = `circle(0 at ${x}px ${y}px)`;
       }, 600);
     });
+
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
