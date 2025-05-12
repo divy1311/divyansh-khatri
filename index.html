@@ -362,7 +362,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto;
+      text-align: center;
       margin-top: 2.5rem;
       padding: 0.6rem 1.2rem;
       background: linear-gradient(135deg, var(--accent-start) 0%, var(--accent-end) 100%);
@@ -384,6 +384,21 @@
     /* Add gap between hero buttons */
     .hero-text .btn-hero + .btn-hero {
       margin-left: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .hero-text .btn-hero {
+        margin: 0.5rem 0;
+        width: fit-content;
+      }
     }
 
     .btn-hero:hover,
@@ -736,6 +751,13 @@
       min-width: 80px;
       font-size: 0.875rem;
       color: var(--text-faint);
+    }
+
+    /* Inline date (hidden by default) */
+    .period-inline {
+      display: none;
+      font-weight: 600;
+      color: var(--text-dark);   /* black in light theme, light‑gray in dark */
     }
 
     .work-content {
@@ -1165,6 +1187,72 @@
         }
       }
     }
+    /* Responsive adjustments for small screens */
+    @media (max-width: 600px) {
+      /* Make one project card per row */
+      .project {
+        width: 100% !important;
+      }
+
+      /* Work‑experience items stack vertically */
+      .work-item {
+        flex-direction: column;
+      }
+
+      .work-item .period {
+        min-width: 0;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--text-faint);
+      }
+
+      /* Show inline date, hide standalone date on phones */
+      .period-inline {
+        display: block;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+      }
+      .work-item .period {
+        display: none;
+      }
+
+      /* Hero sizing & typography tweaks for phones */
+      .hero {
+        padding: 6rem 1rem 3rem;
+      }
+      .hero-text h1 {
+        font-size: 1.9rem;
+        margin-bottom: 2rem;
+      }
+      .hero-text p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+      /* Compact hero buttons */
+      .btn-hero {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+      }
+
+      /* Project card typography & buttons */
+      .project-details h3 {
+        font-size: 1.25rem;
+      }
+      .project-details a.btn {
+        display: inline-flex;
+        width: auto;
+        min-width: 0;
+        font-size: 0.9rem;
+        padding: 0.6rem 1.25rem;
+        text-align: center;
+        margin: 0.75rem 0;
+        align-self: flex-start;     /* explicitly center in flex column */
+      }
+      /* Remove left margin when hero buttons stack */
+      .hero-text .btn-hero + .btn-hero {
+        margin-left: 0;
+      }
+    }
   </style>
 </head>
 <head>
@@ -1217,7 +1305,7 @@
         <h1>Hi, I'm <strong>Divyansh Khatri</strong> — crafting AI‑powered, performance‑first web experiences.</h1>
         <p>Machine Learning & Software Engineer designing scalable, data‑driven interfaces that delight users.</p>
         <a href="#projects" id="toggle-projects" class="btn-hero">View Projects</a>
-        <a href="#" id="toggle-experience" class="btn-hero">View Experience</a>
+        <a href="#experience" id="toggle-experience" class="btn-hero">View Experience</a>
       </div>
     </section>
 
@@ -1409,13 +1497,13 @@
 
 
     <!-- Experience -->
-    <section class="experience fade-up">
+    <section id="experience" class="experience fade-up">
       <h2><span class="accent-text">Work</span> Experience</h2>
       <ul class="work-list">
         <li class="work-item">
           <div class="period">02/2021 – 06/2023</div>
           <div class="work-content card-glow card-spotlight">
-            <h3>Senior Software Engineer, Accolite Digital</h3>
+            <h3>Senior Software Engineer, Accolite Digital <span class="period-inline">02/2021 – 06/2023</span></h3>
             <div class="tags">
               <img src="https://img.icons8.com/color/48/000000/java-coffee-cup-logo.png" alt="Java" />
               <img src="https://img.icons8.com/?size=100&id=fOhLNqGJsUbJ&format=png&color=000000" alt="Kafka" />
@@ -1437,7 +1525,7 @@
         <li class="work-item">
           <div class="period">10/2021 – 02/2022</div>
           <div class="work-content card-glow card-spotlight">
-            <h3>Freelancer, Podium School</h3>
+            <h3>Freelancer, Podium School <span class="period-inline">10/2021 – 02/2022</span></h3>
             <div class="tags">
               <img src="https://img.icons8.com/color/48/000000/react-native.png" alt="React Native" />
               <img src="https://img.icons8.com/color/48/000000/javascript.png" alt="JavaScript" />
@@ -1459,7 +1547,7 @@
         <li class="work-item">
           <div class="period">08/2020 – 01/2021</div>
           <div class="work-content card-glow card-spotlight">
-            <h3>Freelancer, Bloombrain Classes</h3>
+            <h3>Freelancer, Bloombrain Classes <span class="period-inline">08/2020 – 01/2021</span></h3>
             <div class="tags">
               <img src="https://img.icons8.com/color/48/000000/react-native.png" alt="React Native" />
               <img src="https://img.icons8.com/color/48/000000/javascript.png" alt="JavaScript" />
@@ -1482,7 +1570,7 @@
         <li class="work-item">
           <div class="period">10/2020 – 02/2021</div>
           <div class="work-content card-glow card-spotlight">
-            <h3>Software Developer, Synthesis Systems</h3>
+            <h3>Software Developer, Synthesis Systems <span class="period-inline">10/2020 – 02/2021</span></h3>
             <div class="tags">
               <img src="https://img.icons8.com/color/48/000000/swift.png" alt="Swift" />
               <img src="https://img.icons8.com/color/48/000000/kotlin.png" alt="Kotlin" />
@@ -1590,10 +1678,16 @@
     const secExp  = document.querySelector('.experience');
 
     btnProj.addEventListener('click', () => {
-      secProj.scrollIntoView({ behavior: 'smooth' });
+      window.scrollTo({
+        top: secProj.offsetTop,
+        behavior: 'smooth'
+      });
     });
     btnExp.addEventListener('click', () => {
-      secExp.scrollIntoView({ behavior: 'smooth' });
+      window.scrollTo({
+        top: secExp.offsetTop,
+        behavior: 'smooth'
+      });
     });
   </script>
 
